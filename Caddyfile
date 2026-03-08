@@ -1,0 +1,66 @@
+{
+    layer4 {
+        0.0.0.0:25 {
+            route {
+                proxy {
+                    proxy_protocol v2
+                    upstream 127.0.0.1:10025
+                }
+            }
+        }
+
+        0.0.0.0:993 {
+            route {
+                proxy {
+                    proxy_protocol v2
+                    upstream 127.0.0.1:10993
+                }
+            }
+        }
+
+        0.0.0.0:465 {
+            route {
+                proxy {
+                    proxy_protocol v2
+                    upstream 127.0.0.1:10465
+                }
+            }
+        }
+
+        0.0.0.0:4190 {
+            route {
+                proxy {
+                    proxy_protocol v2
+                    upstream 127.0.0.1:14190
+                }
+            }
+        }
+    }
+}
+
+:80 {
+	file_server
+	# root * /usr/share/caddy
+}
+
+example.com {
+    tls internal
+    redir https://www.example.com{uri}
+}
+
+www.example.com {
+    tls internal
+    root * /var/www/imkerei
+
+    file_server
+}
+
+mail.example.com {
+    tls internal
+    reverse_proxy https://127.0.0.1:10443 {
+        transport http {
+            proxy_protocol v2
+            tls_server_name mail.example.com
+        }
+    }
+}
