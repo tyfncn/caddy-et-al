@@ -31,10 +31,18 @@ jobs:
 
       - name: Get Caddy version
         id: caddy-version
-        run: echo "VERSION=$(grep 'github.com/caddyserver/caddy/v2' go.mod | sed -E 's/.*v2 //')" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(grep 'github.com/caddyserver/caddy/v2' go.mod | sed -E 's/.*v2 //' | sed 's/^v//')" >> $GITHUB_OUTPUT
+
+      - name: Get Caddy-l4 version
+        id: l4-version
+        run: echo "VERSION=$(grep 'github.com/mholt/caddy-l4' go.mod | sed -E 's/.*l4 //')" >> $GITHUB_OUTPUT
+
+      - name: Get Cloudflare version
+        id: cf-version
+        run: echo "VERSION=$(grep 'github.com/caddy-dns/cloudflare' go.mod | sed -E 's/.*re //')" >> $GITHUB_OUTPUT
 
       - name: Calculate short SHA
-        id: calc_sha
+        id: calc-sha
         run: echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -43,8 +51,12 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
+          build-args: |
+            CADDY_VERSION=${{ steps.caddy-version.outputs.VERSION }}
+            L4_VERSION=${{ steps.l4-version.outputs.VERSION }}
+            CF_VERSION=${{ steps.cf-version.outputs.VERSION }}
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.VERSION }}-${{ steps.calc_sha.outputs.short_sha }}
+            ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.VERSION }}-${{ steps.calc-sha.outputs.short_sha }}
             ghcr.io/${{ github.repository }}:${{ steps.caddy-version.outputs.VERSION }}
             ghcr.io/${{ github.repository }}:latest
           platforms: linux/amd64,linux/arm64
