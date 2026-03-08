@@ -35,7 +35,7 @@ jobs:
 
       - name: Calculate short SHA
         id: calc_sha
-        run: echo "short_sha=${{ github.sha::0:7 }}" >> "$GITHUB_OUTPUT"
+        run: echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Build and push
