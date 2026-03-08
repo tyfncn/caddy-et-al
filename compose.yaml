@@ -5,9 +5,9 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        CADDY_VERSION: 2.11.1
+        CADDY_VERSION: 2.11.2
         L4_VERSION: v0.0.0-20260304182434-d882e9c2661d
-        CF_VERSION: v0.0.0-20251204174556-6dc1fbb7e925
+        CF_VERSION: v0.2.3
     image: caddy-et-al:latest
     container_name: caddy
     environment:
