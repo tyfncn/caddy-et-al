@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    groups:
+      gomod-all:
+        patterns:
+          - "*"
     ignore:
       - dependency-name: "github.com/caddy-dns/cloudflare"
         update-types: ["version-update:semver-major"]
